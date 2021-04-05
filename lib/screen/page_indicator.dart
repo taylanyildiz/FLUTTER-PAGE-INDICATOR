@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class PageViewIndicator extends StatefulWidget {
@@ -25,6 +27,7 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
     with TickerProviderStateMixin {
   PageController pageController;
   AnimationController controller;
+  int currentPage = 0;
   Animation animation;
   @override
   void initState() {
@@ -35,9 +38,30 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
       duration: Duration(seconds: 1),
     )..repeat();
     animation = CurvedAnimation(parent: controller, curve: Curves.linear);
+    Timer.periodic(
+      Duration(seconds: 4),
+      (timer) {
+        if (currentPage < widget.itemCount) {
+          currentPage++;
+          pageController.animateToPage(currentPage,
+              duration: Duration(milliseconds: 600), curve: Curves.linear);
+        } else {
+          currentPage = 0;
+          pageController.jumpToPage(0);
+        }
+      },
+    );
     animation.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    pageController.dispose();
+    controller.dispose();
   }
 
   @override
@@ -52,8 +76,9 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
             controller: pageController,
             scrollDirection: Axis.horizontal,
             onPageChanged: (page) async {
-              pageController.animateToPage(page,
-                  duration: Duration(milliseconds: 100), curve: Curves.linear);
+              setState(() {
+                currentPage = page;
+              });
             },
             itemCount: widget.itemCount,
             itemBuilder: (context, index) => AnimatedBuilder(
