@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class PageViewIndicator extends StatefulWidget {
-  final List<Widget> child;
   final int itemCount;
+  final Widget Function(int) build;
   Color bakcgroundColors;
   Color indicatorColor;
   Color indicatorBackgroundColor;
   PageViewIndicator({
     Key key,
     @required this.itemCount,
-    @required this.child,
+    @required this.build,
     Color backGroundColor,
     Color indicatorColor,
     Color indicatorBackgroundColor,
@@ -54,13 +54,12 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
             onPageChanged: (page) async {
               pageController.animateToPage(page,
                   duration: Duration(milliseconds: 100), curve: Curves.linear);
-              setState(() {});
             },
             itemCount: widget.itemCount,
             itemBuilder: (context, index) => AnimatedBuilder(
               animation: pageController,
               builder: (context, child) {
-                return widget.child[index];
+                return widget.build(index);
               },
             ),
           ),
@@ -73,6 +72,7 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
               indicatorColor: widget.indicatorColor,
               indicatorBackgroundColor: widget.indicatorBackgroundColor,
               pageCount: widget.itemCount,
+              // ignore: invalid_use_of_protected_member
               page: pageController.hasListeners ? pageController.page : 0.0,
             ),
           ),
@@ -140,10 +140,10 @@ class IndicatorPaint extends CustomPainter {
 
     canvas.drawRRect(
       RRect.fromLTRBR(
-        indicatorLeftX,
-        0.0,
-        indicatorRightX,
-        2 * radius,
+        indicatorLeftX + thickness,
+        0.0 + thickness,
+        indicatorRightX - thickness,
+        2 * radius - thickness,
         Radius.circular(radius),
       ),
       indicatorPaint,

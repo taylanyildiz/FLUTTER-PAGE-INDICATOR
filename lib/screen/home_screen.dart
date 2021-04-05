@@ -7,26 +7,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Widget> itemsWidget() {
-    var list = <Widget>[];
-    for (var i = 0; i < 3; i++) {
-      list.add(
-        Center(
-          child: Text(
-            '${i} Page',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return list;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
               indicatorBackgroundColor: Colors.grey,
               indicatorColor: Colors.red,
               itemCount: 3,
-              child: itemsWidget(),
+              build: (index) {
+                return Center(
+                  child: Text(
+                    '${index + 1} Page',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
