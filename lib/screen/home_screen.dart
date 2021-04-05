@@ -7,6 +7,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Widget> itemsWidget() {
+    var list = <Widget>[];
+    for (var i = 0; i < 3; i++) {
+      list.add(
+        Center(
+          child: Text(
+            '${i} Page',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,13 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             PageViewIndicator(
-              itemCount: 4,
-              child: Center(
-                  child: Text(
-                'hey',
-                style: TextStyle(color: Colors.white, fontSize: 20.0),
-              )),
-            )
+              backGroundColor: Colors.blue,
+              indicatorBackgroundColor: Colors.grey,
+              indicatorColor: Colors.red,
+              itemCount: 3,
+              child: itemsWidget(),
+            ),
           ],
         ),
       ),

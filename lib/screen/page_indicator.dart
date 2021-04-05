@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 
 class PageViewIndicator extends StatefulWidget {
-  final Widget child;
+  final List<Widget> child;
   final int itemCount;
-
-  const PageViewIndicator({
+  Color bakcgroundColors;
+  Color indicatorColor;
+  Color indicatorBackgroundColor;
+  PageViewIndicator({
     Key key,
     @required this.itemCount,
     @required this.child,
-  }) : super(key: key);
+    Color backGroundColor,
+    Color indicatorColor,
+    Color indicatorBackgroundColor,
+  })  : bakcgroundColors = backGroundColor ?? Colors.red,
+        indicatorColor = indicatorColor ?? Colors.red,
+        indicatorBackgroundColor = indicatorBackgroundColor ?? Colors.yellow,
+        super(key: key);
   @override
   _PageViewIndicatorState createState() => _PageViewIndicatorState();
 }
@@ -39,7 +47,7 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
       children: [
         Container(
           height: 200.0,
-          color: Colors.red,
+          color: widget.bakcgroundColors,
           child: PageView.builder(
             controller: pageController,
             scrollDirection: Axis.horizontal,
@@ -48,11 +56,11 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
                   duration: Duration(milliseconds: 100), curve: Curves.linear);
               setState(() {});
             },
-            itemCount: 4,
+            itemCount: widget.itemCount,
             itemBuilder: (context, index) => AnimatedBuilder(
               animation: pageController,
               builder: (context, child) {
-                return widget.child;
+                return widget.child[index];
               },
             ),
           ),
@@ -62,6 +70,8 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
           height: 20.0,
           child: CustomPaint(
             painter: IndicatorPaint(
+              indicatorColor: widget.indicatorColor,
+              indicatorBackgroundColor: widget.indicatorBackgroundColor,
               pageCount: widget.itemCount,
               page: pageController.hasListeners ? pageController.page : 0.0,
             ),
@@ -80,14 +90,18 @@ class IndicatorPaint extends CustomPainter {
   final double radius;
   final double space;
   final int thickness;
+  final Color indicatorColor;
+  final Color indicatorBackgroundColor;
   IndicatorPaint({
+    this.indicatorBackgroundColor,
+    this.indicatorColor,
     this.pageCount,
     this.page,
   })  : indicatorPaint = Paint()
-          ..color = Colors.red
+          ..color = indicatorColor
           ..style = PaintingStyle.fill,
         fillPaint = Paint()
-          ..color = Colors.yellow
+          ..color = indicatorBackgroundColor
           ..style = PaintingStyle.fill,
         radius = 10.0,
         space = 10,
@@ -138,7 +152,6 @@ class IndicatorPaint extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
     return true;
   }
 }
