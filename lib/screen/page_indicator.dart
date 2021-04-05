@@ -29,6 +29,7 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
   AnimationController controller;
   int currentPage = 0;
   Animation animation;
+  Timer timePage;
   @override
   void initState() {
     super.initState();
@@ -38,17 +39,16 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
       duration: Duration(seconds: 1),
     )..repeat();
     animation = CurvedAnimation(parent: controller, curve: Curves.linear);
-    Timer.periodic(
+    timePage = Timer.periodic(
       Duration(seconds: 4),
       (timer) {
         if (currentPage < widget.itemCount) {
           currentPage++;
-          pageController.animateToPage(currentPage,
-              duration: Duration(milliseconds: 600), curve: Curves.linear);
         } else {
           currentPage = 0;
-          pageController.jumpToPage(0);
         }
+        pageController.animateToPage(currentPage,
+            duration: Duration(milliseconds: 600), curve: Curves.linear);
       },
     );
     animation.addListener(() {
@@ -70,27 +70,6 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 200.0,
-          color: widget.bakcgroundColors,
-          child: PageView.builder(
-            controller: pageController,
-            scrollDirection: Axis.horizontal,
-            onPageChanged: (page) async {
-              setState(() {
-                currentPage = page;
-              });
-            },
-            itemCount: widget.itemCount,
-            itemBuilder: (context, index) => AnimatedBuilder(
-              animation: pageController,
-              builder: (context, child) {
-                return widget.build(index);
-              },
-            ),
-          ),
-        ),
-        SizedBox(height: 50.0),
-        Container(
           height: 20.0,
           child: CustomPaint(
             painter: IndicatorPaint(
@@ -102,6 +81,25 @@ class _PageViewIndicatorState extends State<PageViewIndicator>
             ),
           ),
         ),
+        Container(
+          height: 200.0,
+          color: widget.bakcgroundColors,
+          child: PageView.builder(
+            controller: pageController,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (page) async {
+              currentPage = page;
+            },
+            itemCount: widget.itemCount,
+            itemBuilder: (context, index) => AnimatedBuilder(
+              animation: pageController,
+              builder: (context, child) {
+                return widget.build(index);
+              },
+            ),
+          ),
+        ),
+        SizedBox(height: 50.0),
       ],
     );
   }
